@@ -7,6 +7,7 @@ public class DetectorFactory {
 	/** Return instance of Detector, on which to run 'match' */
 	public static IDetector getDetector(){
 		// these details shouldn't matter to whoever is using the class
+		return new DefaultDetector();
 	}
 	
 }

@@ -5,7 +5,10 @@ package detector;
 
 class DefaultDetector implements IDetector {
 
-	// only export detector factory
+	// package private constructor to be called by DetectorFactory
+	DefaultDetector(){
+		// no-op
+	}
 	
 	@Override
 	public int detect(int[] red, int[] green, int[] blue) {
