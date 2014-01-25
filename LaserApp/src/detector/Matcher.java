@@ -29,8 +29,7 @@ class Matcher {
 		}
 		return output;
 	}
-	
-	
+		
 	// TODO: Implement 1D normalized cross-correlation
 	
 }
