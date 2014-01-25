@@ -179,6 +179,8 @@ public class GameLogic {
 					myId = result;
 				else{
 					//incrementKills(result);
+					
+					//Use shootAtTarget
 					//shootAtTarget(result);
 				}
 			}

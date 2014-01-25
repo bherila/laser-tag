@@ -2,12 +2,14 @@ require 'sinatra'
 
 configure do
   set :hits, Hash.new
-  set :HP, Hash.new # change to int
+
+  hp = Hash.new {|h,k| h[k] = 100}
+  set :HP, hp
 end
 
-get '/hit/:id/:range' do |id|
+get '/hit/:id/:damage' do |id, damage|
   # settings.hits[id] = Time.now.to_i.to_s
-  settings.HP[id] -= range
+  settings.HP[id] = settings.HP[id] - damage.to_i
   if settings.HP[id] <= 0
     'Target dead'
   else
@@ -18,6 +20,7 @@ end
 get '/check/:id' do |id|
   # settings.hits[id] or 'Fully Alive'
   if settings.HP[id] <= 0
+    settings.HP[id] = 100
     'Dead'
   else
     'Alive'
