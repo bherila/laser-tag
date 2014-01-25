@@ -18,7 +18,7 @@ public class BankDetector implements IDetector {
 	
 	@Override
 	public int detect(int[] red, int[] green, int[] blue) {
-		System.out.println(">>> BankDetector.detect");
+//		System.out.println(">>> BankDetector.detect");
 		
 		// TODO: Figure out how to deal with colors
 		double[] dred = Util.normalizePixelArray(red);
@@ -30,25 +30,25 @@ public class BankDetector implements IDetector {
 		// one player for the moment	
 		for(int i=0; i<_nPlayers; i++){		
 			
-			System.out.println("BankDetector: match signal for player " + i);		
+//			System.out.println("BankDetector: match signal for player " + i);		
 			ResponsePyramid resp = _filterBanks.get(i).match(redSignal);
-			System.out.println("BankDetector: signal for player " + i + " has been matched");
+//			System.out.println("BankDetector: signal for player " + i + " has been matched");
 					
-			System.out.println("BankDetector.detect: search for global max");
+//			System.out.println("BankDetector.detect: search for global max");
 			maxima[i] = resp.getGlobalMax();
-			System.out.println("BankDetector.detect: global max found");
+//			System.out.println("BankDetector.detect: global max found");
 		}
 		
-		for(int i=0; i<_nPlayers; i++){
-			System.out.println("BankDetector.detect: Max response for player " + i + ": " + maxima[i]);
-		}
+//		for(int i=0; i<_nPlayers; i++){
+//			System.out.println("BankDetector.detect: Max response for player " + i + ": " + maxima[i]);
+//		}
 		
 		// find which player is hit
 		int whoWasHit = Util.indexOfMax(maxima) + 1;
-		System.out.printf("Player %d has been hit\n", whoWasHit);
+//		System.out.printf("Player %d has been hit\n", whoWasHit);
 		
-		System.out.println("BankDetector.detect: max found; stop and think!");
-		System.exit(0);
+//		System.out.println("BankDetector.detect: max found; stop and think!");
+//		System.exit(0);
 		
 		return whoWasHit;	
 	}

@@ -28,6 +28,8 @@ public class DetectorMain {
 		int[] sig = randomSignal(500);		
 		int whoWasHit = det.detect(sig, sig, sig);
 		
+		System.out.println("Player " + whoWasHit + " was hit!");
+		
 	}
 	
 	public static int[] randomSignal(int wh){

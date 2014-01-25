@@ -9,7 +9,7 @@ class Matcher {
 	static double[][] rowConv(double[][] signal, int width, int height,
 					double[] kernel, int kernelWidth, int kernelHeight){
 		
-		System.out.println(">>> Matcher.rowConv");
+//		System.out.println(">>> Matcher.rowConv");
 		
 		int smallWidth = width - kernelWidth + 1;
 		int smallHeight = height - kernelHeight + 1;
@@ -52,7 +52,7 @@ class Matcher {
 			}				
 		}
 		
-		System.out.println("<<< Matcher.rowConv");
+//		System.out.println("<<< Matcher.rowConv");
 		return output;
 	}
 		
