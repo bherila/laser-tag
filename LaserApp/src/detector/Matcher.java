@@ -7,7 +7,8 @@ class Matcher {
 	// gateway
 	static double[][] corr(double[][] signal, int width, int height,
 			double[] kernel, int kernelWidth, int kernelHeight){
-		return ssdCorrRow(signal, width, height, kernel, kernelWidth, kernelHeight);
+//		return ssdCorrRow(signal, width, height, kernel, kernelWidth, kernelHeight);
+		return normXCorrRow(signal, width, height, kernel, kernelWidth, kernelHeight);
 	}
 	
 	
@@ -121,12 +122,12 @@ class Matcher {
 					acc1 = inc1*inc1;
 					
 					// denominator right
-					inc2 = (kernel[c+k]-meanKernel);
+					inc2 = (kernel[k]-meanKernel);
 					acc2 = inc2*inc2;
 				}
 
 				// store similarity measure in output
-				output[r][c] = acc / Math.sqrt(acc1 + acc2);
+				output[r][c] = acc / Math.sqrt(acc1 * acc2);
 			}				
 		}
 	
