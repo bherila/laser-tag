@@ -1,18 +1,31 @@
 package edu.brown.laserapp;
 
-import edu.brown.gamelogic.GameLogic;
+import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 import android.app.Activity;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.content.Context;
+import edu.brown.gamelogic.GameLogic;
 
 public class FullscreenActivity extends Activity {
 
@@ -23,6 +36,24 @@ public class FullscreenActivity extends Activity {
     
     private GameLogic engine;
     private boolean cameraReady;
+	private String lastDeathString;
+	private DeathChecker deathChecker;
+	private int myId;
+    
+    private void hideUi(){
+    	getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN);	
+    }
+    
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) hideUi();
+    }
     
     // Luqi: My hack on acceleration
     private SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -45,6 +76,11 @@ public class FullscreenActivity extends Activity {
 		Log.d("ELI", "onCreate fired");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_fullscreen);
+	    getActionBar().hide();                                 
+	    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+	    					 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		hideUi();
+		myId = 0;
 		
 		mCamera = getCameraInstance();
 		
@@ -64,6 +100,16 @@ public class FullscreenActivity extends Activity {
         deaths = 0;
         
         engine = new GameLogic();
+        deathChecker = new DeathChecker();
+        
+        TimerTask tt = new TimerTask(){
+        	@Override
+        	public void run() {
+        		deathChecker.execute("http://192.168.1.1:3000/check/" + myId);
+        	}
+        };
+        
+        new Timer(true).scheduleAtFixedRate(tt, 0, 500);
 	}
 	
 	@Override
@@ -109,8 +155,32 @@ public class FullscreenActivity extends Activity {
 		vibrate(5000);
 		getTextView(R.id.deaths).setText("" + (++deaths) + " deaths");
 	}
+	public void setMyId(int id) { myId = id; }
+	public int getMyId(){ return myId; }
 	
 	private TextView getTextView(int id) { return (TextView) findViewById(id); }
-		
+	
+	private class DeathChecker extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+	            DefaultHttpClient httpClient = new DefaultHttpClient();
+	            HttpGet httpGet = new HttpGet(urls[0]);
+	
+	            HttpResponse httpResponse = httpClient.execute(httpGet);
+	            HttpEntity httpEntity = httpResponse.getEntity();
+	            return EntityUtils.toString(httpEntity);
+            } catch (IOException e) {
+                return "Unable to retrieve web page. URL may be invalid.";
+            }
+        }
 
+        @Override
+        protected void onPostExecute(String result) {
+        	if (!result.equals(lastDeathString)) {
+    			incrementDeaths();
+    			lastDeathString = result;
+    		}
+       }
+    }
 }

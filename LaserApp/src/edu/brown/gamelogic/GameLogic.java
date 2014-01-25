@@ -58,7 +58,6 @@ public class GameLogic {
 	public void convert(byte[] data, FullscreenActivity act) {
 		int result = -1;
 		
-		
 		try {
 			BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(data, 0, data.length, false);
 		
@@ -94,6 +93,9 @@ public class GameLogic {
 		if (result > 0) {
 			Log.d("ELI", "Got a hit!");
 			act.incrementKills();
+			
+			if (act.getMyId() == 0)
+				act.setMyId(result);
 		}
 	}
 }
