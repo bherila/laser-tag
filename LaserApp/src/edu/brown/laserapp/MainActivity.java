@@ -104,7 +104,6 @@ public class MainActivity extends Activity {
 		//drawView -cross arrow
 		drawView = new DrawView(this);
 		drawView.setBackgroundColor(Color.WHITE);
-		setContentView(drawView);
 		//drawView
 	}
 	

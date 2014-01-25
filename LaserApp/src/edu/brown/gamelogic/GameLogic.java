@@ -44,7 +44,7 @@ public class GameLogic {
 		myId = 0;
 		gunId = 0;
         this.ma = ma;
-        lastDeathString = "Never killed";
+        lastDeathString = "0";
         
         TimerTask tt = new TimerTask(){
         	@Override
@@ -116,7 +116,7 @@ public class GameLogic {
 	private class ShootReporter extends AsyncTask<String, Void, String> {
 		@Override
 		protected String doInBackground(String... urls) {
-			Log.d("ELI", "ShootReporter execute");
+			Log.d("ELI", "ShootReporter execute on " + urls[0]);
 
 			try {
 				DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -187,7 +187,7 @@ public class GameLogic {
 				ma.vibrate(250);
 				
 				if (myId == 0)
-					myId = result == 1 ? 2 : 1;
+					myId = (result == 1 ? 2 : 1);
 				else
 					shootAtTarget(result);
 			}
