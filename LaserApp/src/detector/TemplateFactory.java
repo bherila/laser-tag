@@ -20,8 +20,13 @@ class TemplateFactory {
 	}
 	
 	// return list of all patterns
-	List<double[]> getPatternList(){
-		return _patterns;
+	List<Template> getPatternList(){
+		
+		List<Template> lot = new ArrayList<Template>();
+		for(double[] pat : _patterns){
+			lot.add(new Template(pat));
+		}		
+		return lot;
 	}
 	
 }

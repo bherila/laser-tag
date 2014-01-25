@@ -1,39 +1,59 @@
 package detector;
 
+import java.util.*;
 
 // where to store the patterns?
-
 class DefaultDetector implements IDetector {
 
 	// package private constructor to be called by DetectorFactory
 	DefaultDetector(){
-		// no-op
+		// no-op; everything at default
 	}
 	
 	@Override
 	public int detect(int[] red, int[] green, int[] blue) {
-		
-		// run the code on all channels
 
-		// Knuth style: Top down, then bottom up!
-		
+		double[] dred = normalizePixelArray(red);
+		double[] dgreen = normalizePixelArray(green);
+		double[] dblue = normalizePixelArray(blue);
+			
 		// start with one color
-		pyr = new ImagePyramid(red);
-		fac = new TemplateFactory();
+		ImagePyramid pyr = ImagePyramid.from1DQuad(dred);
+		TemplateFactory fac = new TemplateFactory();
+		List<Template> patterns = fac.getPatternList();
+		int nTemplates = patterns.size();
+		double[] scores = new double[nTemplates];
 		
-		// what does this return?
-		// a normalized something?
-		// just boolean if there was a match?
-		double best = pyramid.match(fac.getTemp("foo"));
-		
-		// match all with all?
-		
-		
-		
-		
-		
-		// TODO Auto-generated method stub
-		return 0;
+		for(int i=0; i<nTemplates; i++){
+			scores[i] = pyr.match(patterns.get(i));
+		}
+	
+		int hitId = indexOfMax(scores);		
+		return hitId;
 	}
-
+	
+	// convert int [0,255] to double [0.0,1.0]
+	private double[] normalizePixelArray(int[] input){
+		int size = input.length;
+		double[] output = new double[size];
+		for(int i=0; i<size; i++){
+			output[i] = ( (double)input[i] ) / 255.0;
+		}
+		return output;
+	}
+	
+	private int indexOfMax(double[] data){
+		double max = Double.NEGATIVE_INFINITY;
+		int idx = 0;
+		int size = data.length;
+		for(int i=0; i<size; i++){
+			if(data[i] > max){
+				// update current maximum value and its index
+				max = data[i];
+				idx = i;
+			}
+		}
+		return idx;
+	}
+	
 }
