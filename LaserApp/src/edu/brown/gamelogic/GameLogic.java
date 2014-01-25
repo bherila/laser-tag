@@ -13,6 +13,37 @@ import detector.DefaultDetector;
 import edu.brown.laserapp.FullscreenActivity;
 
 public class GameLogic {
+	/* Different guns!
+	 */
+	String[] gun_names = new String[] {"Desert Eagle", "M4A1", "AK41", "AWP"};
+	Integer[] gun_damages = new Integer[] {20, 40, 45, 90}; 
+	// Different guns!
+	
+	// Player class
+	public class Players{
+		private class Player{
+			public int id;
+			public int gun_id;
+			public Integer HP;
+			public Player(int id) {
+				this.id = id;
+				gun_id = 0;
+				HP = 100;
+			}
+		}
+		
+		private Player[] players = new Player[4];
+		
+		public Players() {
+			for (int i = 0 ; i < 4 ; i++) {
+				players[i] = new Player(i);
+			}
+		}
+		
+		
+	}
+	// Player class
+	
 	public class RGBImage{
 		public int[] red;
 		public int[] green;
