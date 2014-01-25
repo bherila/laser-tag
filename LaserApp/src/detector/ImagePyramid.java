@@ -7,7 +7,9 @@ class ImagePyramid {
 	private List<double[][]> _scales;
 	
 	// use 1D array that represents a quad
-	static ImagePyramid from1DQuad(double[] quad){		
+	static ImagePyramid from1DQuad(double[] quad){
+		System.out.println(">>> ImagePyramid.from1DQuad");
+		
 		int wh = (int)Math.floor(Math.sqrt(quad.length));	
 		// convert 1D array to 2D hierarchical array (slower, but safer)
 		// TODO: speed up with 1D arrays?
@@ -17,7 +19,9 @@ class ImagePyramid {
 				twoD[r][c] = quad[r*wh+c];
 			}
 		}
-		return new ImagePyramid(twoD, wh, wh);
+		ImagePyramid pyr = new ImagePyramid(twoD, wh, wh);
+		System.out.println("<<< ImagePyramid.from1DQuad");
+		return pyr;
 	}
 	
 	// package private
@@ -27,15 +31,20 @@ class ImagePyramid {
 		_scales = new ArrayList<double[][]>();
 		_scales.add(data);
 		// currently singleton list
+		System.out.println("ImagePyramid.ImagePyramid: making list of scales");
 	}
 	
 	// returns similarity measure of best match
 	double match(Template temp){	
+		System.out.println(">>> ImagePyramid.match");
+		
 		double[] kernel = temp.get1DPattern();
 		double champion = 0.0;
 		
 		// for-each scale
-		for(double[][] signal : _scales){		
+		for(double[][] signal : _scales){	
+			System.out.println("ImagePyramid.match: $$$ Iterating over another scale");
+			
 			// match each line
 			int width = signal[0].length; // row-major order
 			int height = signal.length;
@@ -48,9 +57,9 @@ class ImagePyramid {
 			// look for maxima
 			double best = maxOf(conved);		
 			champion = (best > champion) ? best : champion;
-		}
+		}		
 		
-		
+		System.out.println("<<< ImagePyramid.match");
 		return champion;
 	}	
 	
