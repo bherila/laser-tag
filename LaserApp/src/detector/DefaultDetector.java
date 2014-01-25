@@ -45,13 +45,13 @@ class DefaultDetector implements IDetector {
 		}
 		System.out.println("DefaultDetector.detect: Matches have been performed");
 	
-		System.exit(0);
+		// System.exit(0);
 		
 		System.out.println("DefaultDetector.detect: Finding best match");
 		int hitId = indexOfMax(scores);	
 		System.out.println("DefaultDetector.detect: Best match has been found");
 		
-		System.exit(0);
+		// System.exit(0);
 		
 		System.out.println(">>> DefaultDetector.detect");
 		return hitId;

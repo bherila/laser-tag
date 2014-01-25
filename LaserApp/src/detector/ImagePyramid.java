@@ -54,9 +54,6 @@ class ImagePyramid {
 			double[][] conved = Matcher.rowConv(signal, width, height, 
 												kernel, kernelWidth, kernelHeight);
 			
-			System.out.println("One match is enough for now!");
-			System.exit(0);
-			
 			// look for maxima
 			double best = maxOf(conved);		
 			champion = (best > champion) ? best : champion;
