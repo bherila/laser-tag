@@ -3,7 +3,7 @@ package detector;
 
 // where to store the patterns?
 
-class DefaultDetector implements IDetector {
+public class DefaultDetector implements IDetector {
 
 	// only export detector factory
 	
