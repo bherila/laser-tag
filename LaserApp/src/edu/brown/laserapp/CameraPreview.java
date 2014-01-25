@@ -14,11 +14,13 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private SurfaceHolder mHolder;
     private Camera mCamera;
     private MainActivity ma;
+    private long lastPicture;
 
 	public CameraPreview(MainActivity context, Camera camera) {
         super(context);
         mCamera = camera;
         ma = context;
+        lastPicture = 0;
 
         mHolder = getHolder();
         mHolder.addCallback(this);
@@ -69,7 +71,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     
     @Override
     public boolean onTouchEvent(MotionEvent me) {
-    	ma.takePicture();
+    	if (System.currentTimeMillis() > lastPicture + 250) {
+    		ma.takePicture();
+    		lastPicture = System.currentTimeMillis();
+    	}
     	return true;
     }
 }

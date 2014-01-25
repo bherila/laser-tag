@@ -32,8 +32,6 @@ public class GameLogic {
 	private int myId;
 	private int gunId;
 	
-	private DeathChecker deathChecker;
-	private KillReporter killReporter;
 	private MainActivity ma;
 	private String lastDeathString;
 
@@ -42,29 +40,19 @@ public class GameLogic {
 		deaths = 0;
 		myId = 0;
 		gunId = 0;
-        deathChecker = new DeathChecker();
-        killReporter = new KillReporter();
         this.ma = ma;
         lastDeathString = null;
         
         TimerTask tt = new TimerTask(){
         	@Override
         	public void run() {
-        		deathChecker.execute("http://" + URL_BASE + "/check/" + myId);
+        		new DeathChecker().execute("http://" + URL_BASE + "/check/" + myId);
         	}
         };
         
         new Timer(true).scheduleAtFixedRate(tt, 0, 500);
 	}
-	
-	public void incrementKills(){
-		ma.vibrate(250);
-		ma.setKillsText("" + (++kills) + " kills");
-	}
-	public void incrementDeaths(){
-		ma.vibrate(5000);
-		ma.setDeathsText("" + (++deaths) + " deaths");
-	}
+
 	
 	public void convert(byte[] data, MainActivity act) {
 		int result = -1;
@@ -104,16 +92,22 @@ public class GameLogic {
 		if (result > 0) {
 			Log.d("ELI", "Got a hit!");
 			
+			ma.vibrate(250);
+			
 			if (myId == 0)
 				myId = result;
 			else
-				reportKill(result);
+				incrementKills(result);
 		}
 	}
 	
-	private void reportKill(int id){
-		incrementKills();
-		killReporter.execute("http://" + URL_BASE + "/hit/" + id);
+	private void incrementKills(int id){
+		ma.setKillsText("" + (++kills) + " kills");
+		new KillReporter().execute("http://" + URL_BASE + "/hit/" + id);
+	}
+	private void incrementDeaths(){
+		ma.vibrate(5000);
+		ma.setDeathsText("" + (++deaths) + " deaths");
 	}
 	
 	private class DeathChecker extends AsyncTask<String, Void, String> {
