@@ -97,7 +97,7 @@ public class GameLogic {
 	            HttpEntity httpEntity = httpResponse.getEntity();
 	            return EntityUtils.toString(httpEntity);
             } catch (IOException e) {
-                return "IOE in DC";
+                return null;
             }
         }
 

@@ -1,5 +1,8 @@
 package edu.brown.laserapp;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -24,6 +27,7 @@ public class MainActivity extends Activity {
 
     private GameLogic engine;
     private boolean cameraReady;
+    private Timer cameraReadyTimer;
     
 //    // Luqi: My hack on acceleration
 //    private SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -41,26 +45,32 @@ public class MainActivity extends Activity {
 //    
 //    // Luqi END
     
-    // cross arrow
-    public class DrawView extends View {
-    	Paint paint = new Paint();
-    	
-    	public DrawView(Context context) {
+    static class CrosshairsView extends View {
+    	static Paint paint = new Paint();
+    	    	
+    	public CrosshairsView(Context context) {
     		super(context);
-    		paint.setColor(Color.BLACK);
     	}
     	
     	@Override
     	public void onDraw(Canvas canvas) {
-    		canvas.drawLine(0, 0, 20, 20, paint);
-            canvas.drawLine(20, 0, 0, 20, paint);
+    		int w = canvas.getWidth();
+    		int h = canvas.getHeight();
+    		
+    		paint.setColor(Color.BLACK);
+    		canvas.drawLine(w/2-20, h/2-20, w/2+20, h/2+20, paint);
+    		canvas.drawLine(w/2-20, h/2+20, w/2+20, h/2-20, paint);
+    		
+    		paint.setColor(Color.WHITE);
+    		canvas.drawLine(w/2-20+2, h/2-20, w/2+20+2, h/2+20, paint);
+    		canvas.drawLine(w/2-20+2, h/2+20, w/2+20+2, h/2-20, paint);
+    		canvas.drawLine(w/2-20-2, h/2-20, w/2+20-2, h/2+20, paint);
+    		canvas.drawLine(w/2-20-2, h/2+20, w/2+20-2, h/2-20, paint);
+    		
+    		paint.setColor(Color.RED);
+    		canvas.drawCircle(w/2, h/2, 5, paint);
     	}
     }
-    
-    //for the drawing of line
-    DrawView drawView;
-    // cross arrow
-    
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +79,18 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_fullscreen);
 
 		hideUi();
+		
+		FrameLayout crosshairs = (FrameLayout) findViewById(R.id.crosshairs);
+        crosshairs.addView(new CrosshairsView(this));
+        
+        cameraReadyTimer = new Timer(true);
+        TimerTask tt = new TimerTask(){
+        	@Override
+        	public void run(){
+        		cameraReady = true;
+        	}
+        };
+        cameraReadyTimer.scheduleAtFixedRate(tt, 0, 600);
 		
 		try {
 			mCamera = Camera.open();
@@ -80,19 +102,16 @@ public class MainActivity extends Activity {
 			cameraReady = false;
 		} else {
 			Log.d("ELI", "Got camera");
+			
+			Camera.Parameters params = mCamera.getParameters();
+			params.setPictureSize(3264, 2448);
+			mCamera.setParameters(params);
+			
 	        mPreview = new CameraPreview(this, mCamera);
 	        cameraReady = true;
 	        
 	        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
 	        preview.addView(mPreview);
-	        
-	        //drawView -cross arrow
-			//drawView = new DrawView(this);
-			//drawView.setBackgroundColor(Color.WHITE);
-			//setContentView(drawView);
-			//FrameLayout cross_arrow = (FrameLayout) findViewById(R.id.crossarrow);
-	        //preview.addView(cross_arrow);
-			//drawView
 		}
         
         engine = new GameLogic(this);
@@ -103,7 +122,6 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				engine.restart();
 			}
 		});
@@ -129,7 +147,6 @@ public class MainActivity extends Activity {
 			    @Override
 			    public void onPictureTaken(byte[] data, Camera camera) {
 			    	camera.startPreview();
-			    	cameraReady = true;
 			    	Log.d("ELI", "picture taken");
 			    	engine.convert(data);
 			    }
