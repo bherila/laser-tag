@@ -5,7 +5,7 @@ import java.util.*;
 // makes all the patterns we need
 class TemplateFactory {
 
-	final static double[] FOO_PATTERN = {0, 1, 0};
+	final static double[] FOO_PATTERN = {1, 1, 0};
 	final static double[] BAR_PATTERN = {1, 0, 1};
 	final static double[] BAZ_PATTERN = {0, 0, 1};
 	

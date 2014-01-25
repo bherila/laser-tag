@@ -17,24 +17,24 @@ class Matcher {
 		double acc = 0.0; // accumulator
 		
 		// what do signal and kernel look like?
-		System.out.println("Signal: ");
-		for(int j=0; j<height; j++){
-			for(int i=0; i<width; i++){
-				System.out.printf("%f ", signal[j][i]);	
-			}
-			System.out.println();
-		}
+//		System.out.println("Signal: ");
+//		for(int j=0; j<height; j++){
+//			for(int i=0; i<width; i++){
+//				System.out.printf("%f ", signal[j][i]);	
+//			}
+//			System.out.println();
+//		}
 		
 		
-		System.out.println("kernel: ");
-		int len = kernel.length;
-		for(int i=0; i<len; i++){
-			System.out.printf("%f ",  kernel[i]);
-		}
-		System.out.println();
+//		System.out.println("kernel: ");
+//		int len = kernel.length;
+//		for(int i=0; i<len; i++){
+//			System.out.printf("%f ",  kernel[i]);
+//		}
+//		System.out.println();
 		
-		System.out.printf("smallHeight: %d\n", smallHeight);
-		System.out.printf("smallWidth: %d\n", smallWidth);
+//		System.out.printf("smallHeight: %d\n", smallHeight);
+//		System.out.printf("smallWidth: %d\n", smallWidth);
 
 		
 		// perform row-wise matching (nothing in the y dimension)

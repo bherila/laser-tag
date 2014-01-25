@@ -16,8 +16,9 @@ public class DetectorMain {
 		IDetector det = DetectorFactory.getDetector();	
 		
 		// int[] sig = SIGNAL;
-		for(int i=10; i<=100; i++){
-			int[] sig = randomSignal(i);
+		Random rand = new Random();
+		for(int i=0; i<1; i++){
+			int[] sig = randomSignal(500);
 			int hit = det.detect(sig, sig, sig);		
 			System.out.printf("Player %d has been hit!\n", hit);
 		}
