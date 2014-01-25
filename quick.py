@@ -2,35 +2,38 @@ from PIL import Image
 from math import sqrt
 import re
 
-im = Image.open("./samples/b.jpg")
+im = Image.open("./checkers.jpg")
 pix = im.load()
 
-def distance(rgb1, rgb2):
-    a,b,c = rgb1
-    d,e,f = rgb2
-    return sqrt((a-d)**2 + (b-e)**2 + (c-f)**2)
-
 def color(rgb):
-    options = [('w',255,255,255),('k',0,0,0),('r',255,128,128)]
-    d = lambda o: distance(rgb, o[1:])
-    return min(options, key=d)[0]
+    r, g, b = rgb
+    return (0.2989*r + 0.5870*g + 0.1140*b) < 128
 
-xs, xe, ys, ye = 1000, 1500, 1300, 1800
 
-rows = [''.join([color(pix[x,y]) for x in range(xs, xe)]) for y in range(ys, ye)]
 
-template = 'rkrwwrkr'
-patterns = []
+W = True
+B = False
 
-for i in range(2, 10):
-    reps = "{%d,%d}" % (i, 3*i)
-    patterns.append(''.join([x+reps for x in template]))
+template = [[B, W, B, W],
+            [W, B, W, B],
+	    [B, W, B, W],
+	    [W, B, W, B]]
 
-for p in patterns:
-    l = len(p)
-    for i in range(len(rows)):
-        row = rows[i]
-        m = re.search(p, row)
-        if m:
-            print "Found! Row %d, range: %d -- %d, %s" % (i, m.start(), m.end(), row[m.start():m.end()])
+scales = range(1, 100, 5)
+
+xs, xe, ys, ye = 1000, 1500, 1100, 1600
+
+rows = [[color(pix[x,y]) for x in range(xs, xe)] for y in range(ys, ye)]
+
+for scale in scales:
+    for sx in range(xe-xs-3*scale-1):
+        for sy in range(ye-ys-3*scale-1):
+            still_good = True
+            for i in range(4):
+                for j in range(4):
+                    still_good = template[i][j] == rows[sx+i*scale][sy+j*scale]
+                    if not still_good: break
+                if not still_good: break
+            if still_good:
+                print "Found: scale, sx, sy = %d, %d, %d" % (scale, sx, sy)
 

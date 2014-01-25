@@ -72,10 +72,9 @@ public class MainActivity extends Activity {
     }
 	
 	@Override
-	protected void onDestroy(){ if (mCamera != null) mCamera.release(); }
+	protected void onDestroy(){ if (mCamera != null) mCamera.release(); super.onDestroy(); }
 	
 	public void takePicture(){		
-		final MainActivity fa = this;
 		Log.d("ELI", "FIRING!");
 		
 		if (cameraReady) {
@@ -87,7 +86,7 @@ public class MainActivity extends Activity {
 			    	camera.startPreview();
 			    	cameraReady = true;
 			    	Log.d("ELI", "picture taken");
-			    	engine.convert(data, fa);
+			    	engine.convert(data);
 			    }
 			});
 		}

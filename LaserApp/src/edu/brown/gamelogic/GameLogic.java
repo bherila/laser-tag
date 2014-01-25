@@ -47,7 +47,7 @@ public class GameLogic {
         TimerTask tt = new TimerTask(){
         	@Override
         	public void run() {
-        		new DeathChecker().execute("http://" + URL_BASE + "/check/" + myId);
+        		//new DeathCheckerTask().execute("http://" + URL_BASE + "/check/" + myId);
         	}
         };
         
@@ -55,61 +55,19 @@ public class GameLogic {
 	}
 
 	
-	public void convert(byte[] data, MainActivity act) {
-		int result = -1;
-		
-		try {
-			BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(data, 0, data.length, false);
-		
-			int midX = decoder.getWidth()/2;
-			int midY = decoder.getHeight()/2;
-			
-			Bitmap bitMap = decoder.decodeRegion(new Rect(midX-250, midY-250, midX+250, midY+250), null);
-	
-			int width = bitMap.getWidth();
-			int height = bitMap.getHeight();
-			
-			int[] R = new int[width*height];
-			int[] G = new int[width*height];
-			int[] B = new int[width*height];
-
-			for(int x = 0; x < width; ++x) {
-				for(int y = 0; y < height; ++y) {
-					int pixel = bitMap.getPixel(x, y);
-					R[x*width+y] = Color.red(pixel);
-					G[x*width+y] = Color.green(pixel);
-					B[x*width+y] = Color.blue(pixel);
-				}
-			}
-			
-			result = DetectorFactory.getDetector().detect(R, G, B);
-			
-		} catch (IOException e) {
-			Log.e("GL", "Failed to get a bitmapregiondecoder");
-		}
-
-		if (result > 0) {
-			Log.d("ELI", "Got a hit!");
-			
-			ma.vibrate(250);
-			
-			if (myId == 0)
-				myId = result;
-			else
-				incrementKills(result);
-		}
+	public void convert(byte[] data) {
+		new HitDetectorTask().execute(data);
 	}
-	
 	private void incrementKills(int id){
 		ma.setKillsText("" + (++kills) + " kills");
-		new KillReporter().execute("http://" + URL_BASE + "/hit/" + id);
+		//new KillReporter().execute("http://" + URL_BASE + "/hit/" + id);
 	}
 	private void incrementDeaths(){
 		ma.vibrate(5000);
 		ma.setDeathsText("" + (++deaths) + " deaths");
 	}
 	
-	private class DeathChecker extends AsyncTask<String, Void, String> {
+	private class DeathCheckerTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
             try {
@@ -120,7 +78,7 @@ public class GameLogic {
 	            HttpEntity httpEntity = httpResponse.getEntity();
 	            return EntityUtils.toString(httpEntity);
             } catch (IOException e) {
-                return "Unable to retrieve web page. URL may be invalid.";
+                return null;
             }
         }
 
@@ -133,13 +91,63 @@ public class GameLogic {
        }
     }
 	
-	private class KillReporter extends AsyncTask<String, Void, Void> {
+	private class KillReporterTask extends AsyncTask<String, Void, Void> {
 		@Override
 		protected Void doInBackground(String... urls) {
 			try {
 	            new DefaultHttpClient().execute(new HttpGet(urls[0]));
             } catch (IOException e) { }
 			return null;
+		}
+	}
+	
+	private class HitDetectorTask extends AsyncTask<byte[], Void, Integer> {
+		@Override
+		protected Integer doInBackground(byte[]... params) {
+			byte data[] = params[0];
+			
+			try {
+				BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(data, 0, data.length, false);
+			
+				int midX = decoder.getWidth()/2, midY = decoder.getHeight()/2;
+				
+				Bitmap bitMap = decoder.decodeRegion(new Rect(midX-250, midY-250, midX+250, midY+250), null);
+		
+				int width = bitMap.getWidth(), height = bitMap.getHeight();
+				
+				int[] R = new int[width*height];
+				int[] G = new int[width*height];
+				int[] B = new int[width*height];
+
+				for(int x = 0; x < width; ++x) {
+					for(int y = 0; y < height; ++y) {
+						int pixel = bitMap.getPixel(x, y);
+						R[x*width+y] = Color.red(pixel);
+						G[x*width+y] = Color.green(pixel);
+						B[x*width+y] = Color.blue(pixel);
+					}
+				}
+				
+				Log.d("ELI", "About to detect");
+				return DetectorFactory.getDetector().detect(R, G, B);
+			} catch (IOException e) {
+				Log.e("GL", "Failed to get a bitmapregiondecoder");
+			}
+			return -1;
+		}
+		
+		protected void onPostExecute(Integer result) {
+			Log.d("ELI", "Got detection result: " + result);
+			if (result > 0) {
+				Log.d("ELI", "Got a hit!");
+				
+				ma.vibrate(250);
+				
+				if (myId == 0)
+					myId = result;
+				else
+					incrementKills(result);
+			}
 		}
 	}
 	
