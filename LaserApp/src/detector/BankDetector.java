@@ -50,6 +50,11 @@ public class BankDetector implements IDetector {
 //		System.out.println("BankDetector.detect: max found; stop and think!");
 //		System.exit(0);
 		
+		double[][] foo = {maxima};
+		System.out.println("Max response: " + Util.maxOf(foo));
+		
+		// return maximum value instead
+		
 		return whoWasHit;	
 	}
 

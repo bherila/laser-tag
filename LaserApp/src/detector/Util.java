@@ -28,6 +28,19 @@ public abstract class Util {
 		return idx;
 	}
 	
+	// max of 2D array
+	public static double maxOf(double[][] mat){
+		int height = mat.length;
+		int width = mat[0].length;
+		double max = 0.0;
+		for(int r=0; r<height; r++){
+			for(int c=0; c<width; c++){
+				max = (mat[r][c] > max) ? mat[r][c] : max;
+			}
+		}
+		return max;
+	}
+	
 	// convert array to square matrix
 	public static double[][] array2square(double[] data){
 		int wh = (int)Math.floor(Math.sqrt(data.length)); 
