@@ -26,6 +26,7 @@ public class GameLogic {
 	 */
 	private final static String[]  GUN_NAMES   = new String[] {"Desert Eagle", "M4A1", "AK41", "AWP"};
 	private final static Integer[] GUN_DAMAGES = new Integer[] {20, 40, 45, 90}; 
+	private final static Integer GUN_TOTAL = 4;
 	
     private int kills;
     private int deaths;
@@ -62,6 +63,11 @@ public class GameLogic {
 		gunId = 0;
 	}
 
+	public void switchGun(int gId) {
+		if (!(gId < 0 || gId > GUN_TOTAL)) {
+			gunId = gId;
+		}
+	}
 	
 	public void convert(byte[] data) {
 		new HitDetectorTask().execute(data);
