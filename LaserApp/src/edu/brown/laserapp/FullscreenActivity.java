@@ -1,5 +1,6 @@
 package edu.brown.laserapp;
 
+import edu.brown.gamelogic.GameLogic;
 import android.app.Activity;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
@@ -17,9 +18,11 @@ public class FullscreenActivity extends Activity {
     private int deaths;
     
     private GameLogic engine;
+    private boolean cameraReady;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.d("ELI", "onCreate fired");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_fullscreen);
 		
@@ -27,8 +30,11 @@ public class FullscreenActivity extends Activity {
 		
 		if (mCamera == null) {
 			Log.e("ERR", "camera instance not created!");
+			cameraReady = false;
 		} else {
+			Log.d("ELI", "Got camera");
 	        mPreview = new CameraPreview(this, mCamera);
+	        cameraReady = true;
 	        
 	        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
 	        preview.addView(mPreview);
@@ -47,6 +53,7 @@ public class FullscreenActivity extends Activity {
 	private static Camera getCameraInstance(){ try { return Camera.open(); } catch (Exception e){ return null; } }
 	
 	private void vibrate(long millis) {
+		Log.d("ELI", "trying to vibrate");
 		Vibrator vibe = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 		if (vibe != null) vibe.vibrate(millis);
 	}
@@ -56,12 +63,22 @@ public class FullscreenActivity extends Activity {
 	public void fire(){
 		vibrate(250);
 		
-		mCamera.takePicture(null, null, new PictureCallback() {
-		    @Override
-		    public void onPictureTaken(byte[] data, Camera camera) {
-		    	engine.convert(data, this);
-		    }
-		});
+		final FullscreenActivity fa = this;
+		Log.d("ELI", "FIRING!");
+		
+		if (cameraReady) {
+			cameraReady = false;
+
+			mCamera.takePicture(null, null, new PictureCallback() {
+			    @Override
+			    public void onPictureTaken(byte[] data, Camera camera) {
+			    	camera.startPreview();
+			    	cameraReady = true;
+			    	Log.d("ELI", "picture taken");
+			    	engine.convert(data, fa);
+			    }
+			});
+		}
 	}
 
 	public void incrementKills(){

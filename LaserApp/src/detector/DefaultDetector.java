@@ -19,7 +19,6 @@ public class DefaultDetector implements IDetector {
 		double[] dblue = normalizePixelArray(blue);
 			
 		// start with one color
-<<<<<<< HEAD
 		ImagePyramid pyr = ImagePyramid.from1DQuad(dred);
 		TemplateFactory fac = new TemplateFactory();
 		List<Template> patterns = fac.getPatternList();
@@ -32,24 +31,6 @@ public class DefaultDetector implements IDetector {
 	
 		int hitId = indexOfMax(scores);		
 		return hitId;
-=======
-		//pyr = new ImagePyramid(red);
-		//fac = new TemplateFactory();
-		
-		// what does this return?
-		// a normalized something?
-		// just boolean if there was a match?
-		//double best = pyramid.match(fac.getTemp("foo"));
-		
-		// match all with all?
-		
-		
-		
-		
-		
-		// TODO Auto-generated method stub
-		return 0;
->>>>>>> 768320e15a1d97c0a723e382d99590aa082333d0
 	}
 	
 	// convert int [0,255] to double [0.0,1.0]
