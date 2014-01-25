@@ -4,11 +4,15 @@ import edu.brown.gamelogic.GameLogic;
 import android.app.Activity;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.content.Context;
 
 public class FullscreenActivity extends Activity {
 
@@ -19,6 +23,22 @@ public class FullscreenActivity extends Activity {
     
     private GameLogic engine;
     private boolean cameraReady;
+    
+    // Luqi: My hack on acceleration
+    private SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+    private Sensor mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+    //don't know how to hook mSensor with the SensorEvent
+    private float[] linear_acceleration = new float[3];
+    
+    public void onSensorChanged(SensorEvent event) {
+    	
+    	linear_acceleration[0] = event.values[0];
+    	linear_acceleration[1] = event.values[1];
+    	linear_acceleration[2] = event.values[2];
+    	
+    }
+    
+    // Luqi END
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
