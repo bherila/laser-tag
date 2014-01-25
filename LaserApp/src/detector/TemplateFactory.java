@@ -12,20 +12,27 @@ class TemplateFactory {
 	private List<double[]> _patterns;
 	
 	TemplateFactory(){
+		System.out.println(">>> TemplateFactory.TemplateFactory");
+		
 		// set up patterns
 		_patterns = new ArrayList<double[]>();
 		_patterns.add(FOO_PATTERN);
 		_patterns.add(BAR_PATTERN);
 		_patterns.add(BAZ_PATTERN);
+		
+		System.out.println("<<< TemplateFactory.TemplateFactory");
 	}
 	
 	// return list of all patterns
 	List<Template> getPatternList(){
+		System.out.println(">>> TemplateFactory.getPatternList");
 		
 		List<Template> lot = new ArrayList<Template>();
 		for(double[] pat : _patterns){
 			lot.add(new Template(pat));
-		}		
+		}	
+		
+		System.out.println("<<< TemplateFactory.getPatternList");
 		return lot;
 	}
 	
