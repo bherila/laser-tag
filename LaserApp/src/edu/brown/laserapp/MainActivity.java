@@ -1,6 +1,10 @@
 package edu.brown.laserapp;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
@@ -36,6 +40,26 @@ public class MainActivity extends Activity {
 //    }
 //    
 //    // Luqi END
+    
+    // cross arrow
+    public class DrawView extends View {
+    	Paint paint = new Paint();
+    	
+    	public DrawView(Context context) {
+    		super(context);
+    		paint.setColor(Color.BLACK);
+    	}
+    	
+    	@Override
+    	public void onDraw(Canvas canvas) {
+    		canvas.drawLine(0, 0, 20, 20, paint);
+            canvas.drawLine(20, 0, 0, 20, paint);
+    	}
+    }
+    
+    //for the drawing of line
+    DrawView drawView;
+    // cross arrow
     
 
 	@Override
@@ -76,6 +100,12 @@ public class MainActivity extends Activity {
 			}
 		});
 		//end register the button
+		
+		//drawView -cross arrow
+		drawView = new DrawView(this);
+		drawView.setBackgroundColor(Color.WHITE);
+		setContentView(drawView);
+		//drawView
 	}
 	
     @Override
