@@ -46,8 +46,9 @@
         </LinearLayout>
     </FrameLayout>
     
-    <View 
+    <FrameLayout 
+        android:id="@+id/crossarrow"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/black"/>
+        android:layout_height="match_parent">
+    </FrameLayout>
 </FrameLayout>
