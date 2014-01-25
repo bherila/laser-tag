@@ -1,6 +1,6 @@
 package detector;
 
-// useful static functions to be shared
+// useful static functions to be shared (like "Math" class)
 public abstract class Util {
 
 	// convert int [0,255] to double [0.0,1.0]
@@ -26,6 +26,18 @@ public abstract class Util {
 			}
 		}
 		return idx;
+	}
+	
+	// convert array to square matrix
+	public static double[][] array2square(double[] data){
+		int wh = (int)Math.floor(Math.sqrt(data.length)); 
+		double[][] twoD = new double[wh][wh]; 
+		for(int r=0; r<wh; r++){
+			for(int c=0; c<wh; c++){
+				twoD[r][c] = data[r*wh+c];
+			}
+		}
+		return twoD;
 	}
 	
 }
