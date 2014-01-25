@@ -6,9 +6,4 @@ public class DetectorFactory {
 	public static IDetector getDetector(){
 		return new SimpleDetector();
 	}
-	
-	public static IDetector getDetector(int nPlayers){
-		return new BankDetector(nPlayers);
-	}
-
 }
