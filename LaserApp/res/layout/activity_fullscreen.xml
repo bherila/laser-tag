@@ -46,11 +46,8 @@
         </LinearLayout>
     </FrameLayout>
     
-    <FrameLayout 
-        android:id="@+id/gray_area"
+    <View 
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true" >
-        <!-- not sure how to create a gray area -->
-    </FrameLayout>
+        android:layout_height="1dp"
+        android:background="@android:color/black"/>
 </FrameLayout>
