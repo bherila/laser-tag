@@ -2,20 +2,22 @@ package edu.brown.laserapp;
 
 import java.io.IOException;
 
-import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
     private Camera mCamera;
+    private FullscreenActivity fa;
 
     @SuppressWarnings("deprecation")
-	public CameraPreview(Context context, Camera camera) {
+	public CameraPreview(FullscreenActivity context, Camera camera) {
         super(context);
         mCamera = camera;
+        fa = context;
 
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
@@ -66,5 +68,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         } catch (Exception e){
             Log.d("CAM", "Error starting camera preview: " + e.getMessage());
         }
+    }
+    
+    @Override
+    public boolean onTouchEvent(MotionEvent me) {
+    	fa.fire();
+    	return true;
     }
 }

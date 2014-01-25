@@ -1,20 +1,22 @@
 package edu.brown.laserapp;
 
-import java.io.File;
-
 import android.app.Activity;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 public class FullscreenActivity extends Activity {
 
 	private Camera mCamera;
     private CameraPreview mPreview;
     private int kills;
-
+    private int deaths;
+    
+    private GameLogic engine;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -32,6 +34,9 @@ public class FullscreenActivity extends Activity {
 		}
         
         kills = 0;
+        deaths = 0;
+        
+        engine = new GameLogic();
 	}
 	
 	@Override
@@ -52,20 +57,27 @@ public class FullscreenActivity extends Activity {
 	    }
 	}
 	
-	private PictureCallback mPicture = new PictureCallback() {
-	    @Override
-	    public void onPictureTaken(byte[] data, Camera camera) {
-	    	// 1. Crop data
-	    	// 2. Send to vision algorithm
-	    	// 3. Get result back
-	    	// 4.
-	    	// if (hit)
-	    		// findViewById(R.id.kills).setText(""+(kills+1));
-	    }
-	};
+
 	
 	public void fire(){
-		mCamera.takePicture(null, null, mPicture);
+		mCamera.takePicture(null, null, new PictureCallback() {
+		    @Override
+		    public void onPictureTaken(byte[] data, Camera camera) {
+		    	engine.convert(data, this);
+		    }
+		});
 	}
+	
+	public void incrementKills(){
+		kills++;
+		TextView tv = (TextView) findViewById(R.id.kills);
+		tv.setText("" + kills + " kills");
+	}
+	public void incrementDeaths(){
+		deaths++;
+		TextView tv = (TextView) findViewById(R.id.deaths);
+		tv.setText("" + deaths + " deaths");
+	}
+		
 
 }
