@@ -1,5 +1,7 @@
 package detector;
 
+import java.util.*;
+
 // test functionality
 public class DetectorMain {
 
@@ -8,11 +10,31 @@ public class DetectorMain {
 								9, 10, 11, 12,
 								13, 60, 125, 255};
 	
+	
+	
 	public static void main(String[] argv){		
-		IDetector det = DetectorFactory.getDetector();		
-		int hit = det.detect(SIGNAL, SIGNAL, SIGNAL);		
+		IDetector det = DetectorFactory.getDetector();	
+		
+		int[] sig = SIGNAL;
+		
+		int hit = det.detect(sig, sig, sig);		
 		System.out.printf("Player %d has been hit!\n", hit);		
 		return;
+	}
+	
+	public static double[] randomSignal(int wh){
+		
+		Random rand = new Random();
+		
+		double[] data = new double[wh*wh];
+		for(int j=0; j<wh; j++){
+			for(int i=0; i<wh; i++){
+				data[j*wh+i] = rand.nextDouble();
+			}
+		}
+		
+		return data;
+		
 	}
 	
 }
