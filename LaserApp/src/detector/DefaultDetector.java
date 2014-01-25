@@ -3,7 +3,8 @@ package detector;
 import java.util.*;
 
 // where to store the patterns?
-class DefaultDetector implements IDetector {
+
+public class DefaultDetector implements IDetector {
 
 	// package private constructor to be called by DetectorFactory
 	DefaultDetector(){
