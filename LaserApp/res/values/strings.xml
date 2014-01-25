@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">Laser App</string>
-    <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="kills">0 kills</string>
+    <string name="deaths">0 deaths</string>
 
 </resources>
