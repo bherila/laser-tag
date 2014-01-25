@@ -74,7 +74,7 @@ public class GameLogic {
 	}
 	private void incrementKills(int id){
 		ma.setKillsText("" + (++kills) + " kills");
-		//new KillReporter().execute("http://" + URL_BASE + "/hit/" + id);
+		new ShootReporter().execute("http://" + URL_BASE + "/hit/" + id);
 	}
 	private void shootAtTarget(int id){
 		new ShootReporter().execute("http://" + URL_BASE + "/hit/" + id + "/" + GUN_DAMAGES[gunId]);
@@ -177,8 +177,10 @@ public class GameLogic {
 				
 				if (myId == 0)
 					myId = result;
-				else
-					incrementKills(result);
+				else{
+					//incrementKills(result);
+					//shootAtTarget(result);
+				}
 			}
 		}
 	}
