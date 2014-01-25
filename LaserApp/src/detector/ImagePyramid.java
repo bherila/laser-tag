@@ -2,34 +2,33 @@ package detector;
 
 import java.util.*;
 
-public class ImagePyramid {
+class ImagePyramid {
 
 	private final double THRESHOLD = 0.5;
 	
 	// private fields contain scaled images
 	// ultimately scale does not matter; just hit/non-hit
-	private List<double[]> _scales;
+	private List<double[][]> _scales;
 	
 	// package private
-	ImagePyramid(double[] data, int height, int width){
+	ImagePyramid(double[][] data, int height, int width){
 		
 		// TODO: Find way of making scales (bicubic scaling)
 	}
 	
-	// match matches it with a template
-	// wrap template of be flexible?
-	// yup, template factory returns template
-	
 	// package private again
-	int match(Template temp){
+	// returns similarity measure of best match
+	double match(Template temp){
 		
 		// unwrap content of temp
 		// perform convolution with each scale
 		// for-each scale
-		double[] pattern = temp.getPattern();
+		double[] kernel = temp.get1DPattern();
+		
+		double champion = 0.0;
 		
 		// for-each scale
-		for(double[] scale : _scales){
+		for(double[][] signal : _scales){
 			
 			// perform matching (normalized cross-correlation)			
 			// compute max on the run (use classifier?)
@@ -38,11 +37,23 @@ public class ImagePyramid {
 			// perform the pattern matching
 			
 			// then match each line
+			int width = signal[0].length; // row-major order
+			int height = signal.length;
+			int kernelHeight = 1;
+			int kernelWidth = kernel.length;
+
+			double[][] conved = Matcher.rowConv(signal, width, height, 
+												kernel, kernelWidth, kernelHeight);
 			
+			// look for maxima
+			double best = maxOf(conved);
+			
+			champion = (best > champion) ? best : champion;
+
 		}
 		
 		
-		return 0;
+		return champion;
 	}
 	
 	

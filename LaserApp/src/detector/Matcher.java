@@ -2,12 +2,10 @@ package detector;
 
 
 // The matcher performs template matching based on convolution etc.
-public class Matcher {
+class Matcher {
 
-	// courtesy of "http://stackoverflow.com/questions/13060757/2-dimensional-convolution-how-to-implement-in-java"
-	
-	// TODO: Implement 1D convolution
-	// NOTE: Exhaustive of step-width?
+	// inspired by: "http://stackoverflow.com/questions/13060757/
+	// 2-dimensional-convolution-how-to-implement-in-java"
 	static double[][] rowConv(double[][] signal, int width, int height,
 					double[] kernel, int kernelWidth, int kernelHeight){
 		
