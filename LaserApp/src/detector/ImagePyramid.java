@@ -46,9 +46,9 @@ class ImagePyramid {
 												kernel, kernelWidth, kernelHeight);
 			
 			// look for maxima
-			double best = maxOf(conved);
+			//double best = maxOf(conved);
 			
-			champion = (best > champion) ? best : champion;
+			//champion = (best > champion) ? best : champion;
 
 		}
 		

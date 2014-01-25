@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 public class FullscreenActivity extends Activity {
@@ -20,10 +21,15 @@ public class FullscreenActivity extends Activity {
 		setContentView(R.layout.activity_fullscreen);
 		
 		mCamera = getCameraInstance();
-        mPreview = new CameraPreview(this, mCamera);
-        
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        preview.addView(mPreview);
+		
+		if (mCamera == null) {
+			Log.e("ERR", "camera instance not created!");
+		} else {
+	        mPreview = new CameraPreview(this, mCamera);
+	        
+	        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+	        preview.addView(mPreview);
+		}
         
         kills = 0;
 	}

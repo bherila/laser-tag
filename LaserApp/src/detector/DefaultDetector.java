@@ -15,13 +15,13 @@ class DefaultDetector implements IDetector {
 		// Knuth style: Top down, then bottom up!
 		
 		// start with one color
-		pyr = new ImagePyramid(red);
-		fac = new TemplateFactory();
+		//pyr = new ImagePyramid(red);
+		//fac = new TemplateFactory();
 		
 		// what does this return?
 		// a normalized something?
 		// just boolean if there was a match?
-		double best = pyramid.match(fac.getTemp("foo"));
+		//double best = pyramid.match(fac.getTemp("foo"));
 		
 		// match all with all?
 		
