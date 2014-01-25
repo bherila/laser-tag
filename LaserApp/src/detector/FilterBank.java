@@ -62,7 +62,8 @@ public class FilterBank {
 		int kernelWidth = kernel.length;
 		int kernelHeight = 1;
 		
-		double[][] conved = Matcher.rowConv(signal, width, height,
+		// measure correlation (internals subject to change)
+		double[][] conved = Matcher.corr(signal, width, height,
 											kernel, kernelWidth, kernelHeight);
 		
 		return conved;
