@@ -85,6 +85,14 @@ public class MainActivity extends Activity {
 	        
 	        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
 	        preview.addView(mPreview);
+	        
+	        //drawView -cross arrow
+			drawView = new DrawView(this);
+			drawView.setBackgroundColor(Color.WHITE);
+			//setContentView(drawView);
+			FrameLayout cross_arrow = (FrameLayout) findViewById(R.id.crossarrow);
+	        preview.addView(cross_arrow);
+			//drawView
 		}
         
         engine = new GameLogic(this);
@@ -100,11 +108,6 @@ public class MainActivity extends Activity {
 			}
 		});
 		//end register the button
-		
-		//drawView -cross arrow
-		drawView = new DrawView(this);
-		drawView.setBackgroundColor(Color.WHITE);
-		//drawView
 	}
 	
     @Override
