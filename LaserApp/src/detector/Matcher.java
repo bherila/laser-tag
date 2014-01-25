@@ -10,8 +10,7 @@ class Matcher {
 //		return ssdCorrRow(signal, width, height, kernel, kernelWidth, kernelHeight);
 		return normXCorrRow(signal, width, height, kernel, kernelWidth, kernelHeight);
 	}
-	
-	
+		
 	
 	// inspired by: "http://stackoverflow.com/questions/13060757/
 	// 2-dimensional-convolution-how-to-implement-in-java"
@@ -127,7 +126,7 @@ class Matcher {
 				}
 
 				// store similarity measure in output
-				output[r][c] = acc / Math.sqrt(acc1 * acc2);
+				output[r][c] = ((acc1==0) || (acc2==0)) ? 1.0 :acc / Math.sqrt(acc1 * acc2);
 			}				
 		}
 	
