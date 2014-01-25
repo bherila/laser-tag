@@ -20,7 +20,7 @@ import detector.DetectorFactory;
 import edu.brown.laserapp.MainActivity;
 
 public class GameLogic {
-	private final static String URL_BASE = "192.168.1.1:3000";
+	private final static String URL_BASE = "172.20.10.4:4567";
 	
 	/* Different guns!
 	 */
@@ -44,12 +44,13 @@ public class GameLogic {
 		myId = 0;
 		gunId = 0;
         this.ma = ma;
-        lastDeathString = null;
+        lastDeathString = "Never killed";
         
         TimerTask tt = new TimerTask(){
         	@Override
         	public void run() {
-        		//new DeathCheckerTask().execute("http://" + URL_BASE + "/check/" + myId);
+        		Log.d("DC", "Checking for death");
+        		new DeathCheckerTask().execute("http://" + URL_BASE + "/check/" + myId);
         	}
         };
         
@@ -61,6 +62,7 @@ public class GameLogic {
 		deaths = 0;
 		HP = 100;
 		gunId = 0;
+		Log.d("ELI", "Restarting");
 	}
 
 	public void switchGun(int gId) {
@@ -72,14 +74,13 @@ public class GameLogic {
 	public void convert(byte[] data) {
 		new HitDetectorTask().execute(data);
 	}
-	private void incrementKills(int id){
-		ma.setKillsText("" + (++kills) + " kills");
-		new ShootReporter().execute("http://" + URL_BASE + "/hit/" + id);
-	}
 	private void shootAtTarget(int id){
+		Log.d("ELI", "Shooting at target");
 		new ShootReporter().execute("http://" + URL_BASE + "/hit/" + id + "/" + GUN_DAMAGES[gunId]);
+		ma.setKillsText("" + (++kills) + " kills");
 	}
 	private void incrementDeaths(){
+		Log.d("ELI","Incrementing deaths");
 		ma.vibrate(5000);
 		ma.setDeathsText("" + (++deaths) + " deaths");
 	}
@@ -88,6 +89,7 @@ public class GameLogic {
         @Override
         protected String doInBackground(String... urls) {
             try {
+            	Log.d("DC", "Looking at URL " + urls[0]);
 	            DefaultHttpClient httpClient = new DefaultHttpClient();
 	            HttpGet httpGet = new HttpGet(urls[0]);
 	
@@ -95,15 +97,18 @@ public class GameLogic {
 	            HttpEntity httpEntity = httpResponse.getEntity();
 	            return EntityUtils.toString(httpEntity);
             } catch (IOException e) {
-                return null;
+                return "IOE in DC";
             }
         }
 
         @Override
         protected void onPostExecute(String result) {
-        	if (result != null && !result.equals("Dead")) {
+        	if (result != null && !result.equals(lastDeathString)) {
+        		Log.d("DC", "Dead!");
     			incrementDeaths();
-    			//lastDeathString = result;
+    			lastDeathString = result;
+    		} else {
+    			Log.d("DC", "Alive");
     		}
        }
     }
@@ -111,25 +116,31 @@ public class GameLogic {
 	private class ShootReporter extends AsyncTask<String, Void, String> {
 		@Override
 		protected String doInBackground(String... urls) {
+			Log.d("ELI", "ShootReporter execute");
+
 			try {
-	            //new DefaultHttpClient().execute(new HttpGet(urls[0]));
 				DefaultHttpClient httpClient = new DefaultHttpClient();
 	            HttpGet httpGet = new HttpGet(urls[0]);
 	
 	            HttpResponse httpResponse = httpClient.execute(httpGet);
 	            HttpEntity httpEntity = httpResponse.getEntity();
 	            return EntityUtils.toString(httpEntity);
-            } catch (IOException e) { 
-            	return "Unable to retrieve web page. KillReporter";
+            } catch (IOException e) {
+            	Log.e("ELI", "ShootReporter threw an IOException.");
+            	Log.e("ELI", e.getMessage());
+            	return null;
             }
 		}
 		
 		@Override
 		protected void onPostExecute(String result) {
 			// determine the return string from server
-			if (result != null && result.equals("Target dead")) {
-				ma.setKillsText("" + (++kills) + " kills");
-			}
+			//if (result != null && result.equals("Target dead")) {
+				Log.d("ELI", "ShootReporter: got a kill");
+
+			//} else {
+			//	Log.d("ELI", "ShootReporter: only wounded");
+			//}
 		}
 	}
 	
@@ -176,13 +187,9 @@ public class GameLogic {
 				ma.vibrate(250);
 				
 				if (myId == 0)
-					myId = result;
-				else{
-					//incrementKills(result);
-					
-					//Use shootAtTarget
-					//shootAtTarget(result);
-				}
+					myId = result == 1 ? 2 : 1;
+				else
+					shootAtTarget(result);
 			}
 		}
 	}
