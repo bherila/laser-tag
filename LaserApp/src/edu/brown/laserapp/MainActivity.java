@@ -87,11 +87,11 @@ public class MainActivity extends Activity {
 	        preview.addView(mPreview);
 	        
 	        //drawView -cross arrow
-			drawView = new DrawView(this);
-			drawView.setBackgroundColor(Color.WHITE);
+			//drawView = new DrawView(this);
+			//drawView.setBackgroundColor(Color.WHITE);
 			//setContentView(drawView);
-			FrameLayout cross_arrow = (FrameLayout) findViewById(R.id.crossarrow);
-	        preview.addView(cross_arrow);
+			//FrameLayout cross_arrow = (FrameLayout) findViewById(R.id.crossarrow);
+	        //preview.addView(cross_arrow);
 			//drawView
 		}
         
