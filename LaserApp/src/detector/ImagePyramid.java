@@ -28,6 +28,12 @@ class ImagePyramid {
 	ImagePyramid(double[][] data, int height, int width){		
 		// TODO: Find way of making scales (bicubic scaling)
 		// (for now just use one scale)
+		
+		// make an image and use image resize
+		
+		
+		
+		
 		_scales = new ArrayList<double[][]>();
 		_scales.add(data);
 		// currently singleton list
