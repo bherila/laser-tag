@@ -29,6 +29,7 @@ public class GameLogic {
 	
     private int kills;
     private int deaths;
+    private int HP;
     
 	private int myId;
 	private int gunId;
@@ -53,6 +54,13 @@ public class GameLogic {
         
         new Timer(true).scheduleAtFixedRate(tt, 0, 500);
 	}
+	
+	public void restart() {
+		kills = 0;
+		deaths = 0;
+		HP = 100;
+		gunId = 0;
+	}
 
 	
 	public void convert(byte[] data) {
@@ -61,6 +69,9 @@ public class GameLogic {
 	private void incrementKills(int id){
 		ma.setKillsText("" + (++kills) + " kills");
 		//new KillReporter().execute("http://" + URL_BASE + "/hit/" + id);
+	}
+	private void shootAtTarget(int id){
+		new ShootReporter().execute("http://" + URL_BASE + "/hit/" + id + "/" + GUN_DAMAGES[gunId]);
 	}
 	private void incrementDeaths(){
 		ma.vibrate(5000);
@@ -84,20 +95,35 @@ public class GameLogic {
 
         @Override
         protected void onPostExecute(String result) {
-        	if (result != null && !result.equals(lastDeathString)) {
+        	if (result != null && !result.equals("Dead")) {
     			incrementDeaths();
-    			lastDeathString = result;
+    			//lastDeathString = result;
     		}
        }
     }
 	
-	private class KillReporterTask extends AsyncTask<String, Void, Void> {
+	private class ShootReporter extends AsyncTask<String, Void, String> {
 		@Override
-		protected Void doInBackground(String... urls) {
+		protected String doInBackground(String... urls) {
 			try {
-	            new DefaultHttpClient().execute(new HttpGet(urls[0]));
-            } catch (IOException e) { }
-			return null;
+	            //new DefaultHttpClient().execute(new HttpGet(urls[0]));
+				DefaultHttpClient httpClient = new DefaultHttpClient();
+	            HttpGet httpGet = new HttpGet(urls[0]);
+	
+	            HttpResponse httpResponse = httpClient.execute(httpGet);
+	            HttpEntity httpEntity = httpResponse.getEntity();
+	            return EntityUtils.toString(httpEntity);
+            } catch (IOException e) { 
+            	return "Unable to retrieve web page. KillReporter";
+            }
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			// determine the return string from server
+			if (result != null && result.equals("Target dead")) {
+				ma.setKillsText("" + (++kills) + " kills");
+			}
 		}
 	}
 	

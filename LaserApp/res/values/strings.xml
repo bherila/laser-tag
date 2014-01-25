@@ -5,5 +5,6 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="kills">0 kills</string>
     <string name="deaths">0 deaths</string>
+    <string name="restart_button">Restart</string>
 
 </resources>

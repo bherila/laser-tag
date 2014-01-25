@@ -1,5 +1,4 @@
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -38,6 +37,20 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/deaths" />
+            <Button
+                android:id="@+id/restart"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/restart_button" />
         </LinearLayout>
+    </FrameLayout>
+    
+    <FrameLayout 
+        android:id="@+id/gray_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true" >
+        <!-- not sure how to create a gray area -->
     </FrameLayout>
 </FrameLayout>

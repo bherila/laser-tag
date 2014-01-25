@@ -8,6 +8,7 @@ import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import edu.brown.gamelogic.GameLogic;
@@ -63,6 +64,18 @@ public class MainActivity extends Activity {
 		}
         
         engine = new GameLogic(this);
+		
+		//register the button
+		final Button button = (Button) findViewById(R.id.restart);
+		button.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				engine.restart();
+			}
+		});
+		//end register the button
 	}
 	
     @Override
