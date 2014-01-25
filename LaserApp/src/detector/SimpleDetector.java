@@ -1,55 +1,53 @@
 package detector;
 
-import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class SimpleDetector implements IDetector {
 	
-	private final Iterable<Pattern> patterns;
-	
-	public SimpleDetector(){
-		patterns = new ArrayList();
+	private final static char R = 'r', K = 'k', W = 'w';
+	private final static char[][] TEMPLATES = {{R,K,R,K,K,R,K,R},{R,K,R,W,W,R,K,R},{R,W,R,K,K,R,W,R},{R,W,R,W,W,R,W,R}};
+	private final static Pattern[][] PATTERNS = new Pattern[4][15];
 
-//		im = Image.open("./samples/b.jpg")
-//		pix = im.load()
-//
-//		def distance(rgb1, rgb2):
-//		    a,b,c = rgb1
-//		    d,e,f = rgb2
-//		    return sqrt((a-d)**2 + (b-e)**2 + (c-f)**2)
-//
-//		def color(rgb):
-//		    options = [('w',255,255,255),('k',0,0,0),('r',255,128,128)]
-//		    d = lambda o: distance(rgb, o[1:])
-//		    return min(options, key=d)[0]
-//
-//		xs, xe, ys, ye = 1000, 1500, 1300, 1800
-//
-//		rows = [''.join([color(pix[x,y]) for x in range(xs, xe)]) for y in range(ys, ye)]
-//
-//		template = 'rkrwwrkr'
-//		patterns = []
-//
-//		for i in range(2, 10):
-//		    reps = "{%d,%d}" % (i, 3*i)
-//		    patterns.append(''.join([x+reps for x in template]))
-//
-//		for p in patterns:
-//		    l = len(p)
-//		    for i in range(len(rows)):
-//		        row = rows[i]
-//		        m = re.search(p, row)
-//		        if m:
-//		            print "Found! Row %d, range: %d -- %d, %s" % (i, m.start(), m.end(), row[m.start():m.end()])
-
-
+	static {
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 4; j < 19; ++j) {
+				String s = "";
+				for (char c : TEMPLATES[i])
+					s += c + "{" + j + "," + (3*j) + "}";
+				PATTERNS[i][j-4] = Pattern.compile(".*" + s + ".*");
+			}
+		}
 	}
 
 	@Override
 	public int detect(int[] red, int[] green, int[] blue) {
 		
+		StringBuilder pixSeq = new StringBuilder(red.length);
+		
+		for (int i = 0; i < red.length; ++i)
+			pixSeq.append(closest(red[i], green[i], blue[i]));
+				
+		for (int i = 0; i < PATTERNS.length; ++i)
+			for (Pattern p : PATTERNS[i])
+				if (p.matcher(pixSeq).matches())
+					return i;
 		
 		return 0;
+	}
+	
+	private double distance(int r1, int g1, int b1, int r2, int g2, int b2) {
+		return Math.sqrt((r1-r2)*(r1-r2) + (g1-g2)*(g1-g2) + (b1-b2)*(b1-b2));
+	}
+	private char closest(int r, int g, int b) {
+		double dr = distance(255,   0,   0, r, g, b),
+			   dk = distance(  0,   0,   0, r, g, b),
+			   dw = distance(255, 255, 255, r, g, b);
+		
+		if (dr < dk)
+			if (dr < dw) 	return R;
+			else 			return W;
+		else if (dk < dw) 	return K;
+		else 				return W;
 	}
 
 }

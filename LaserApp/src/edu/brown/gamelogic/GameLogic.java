@@ -16,6 +16,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.util.Log;
+import detector.DetectorFactory;
 import edu.brown.laserapp.MainActivity;
 
 public class GameLogic {
@@ -71,20 +72,18 @@ public class GameLogic {
 			int[] R = new int[width*height];
 			int[] G = new int[width*height];
 			int[] B = new int[width*height];
-			int pixel;
-			
+
 			for(int x = 0; x < width; ++x) {
 				for(int y = 0; y < height; ++y) {
-					pixel = bitMap.getPixel(x, y);
+					int pixel = bitMap.getPixel(x, y);
 					R[x*width+y] = Color.red(pixel);
 					G[x*width+y] = Color.green(pixel);
 					B[x*width+y] = Color.blue(pixel);
 				}
 			}
 			
-			//DefaultDetector myDetector = new DefaultDetector();
-			//result = myDetector.detect(R, G, B);
-			result = 3;
+			result = DetectorFactory.getDetector().detect(R, G, B);
+			
 		} catch (IOException e) {
 			Log.e("GL", "Failed to get a bitmapregiondecoder");
 		}
