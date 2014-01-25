@@ -13,16 +13,21 @@ public class DetectorMain {
 	
 	
 	public static void main(String[] argv){		
-		IDetector det = DetectorFactory.getDetector();	
+//		IDetector det = DetectorFactory.getDetector();	
 		
 		// int[] sig = SIGNAL;
-		Random rand = new Random();
-		for(int i=0; i<1; i++){
-			int[] sig = randomSignal(500);
-			int hit = det.detect(sig, sig, sig);		
-			System.out.printf("Player %d has been hit!\n", hit);
-		}
-		return;
+//		Random rand = new Random();
+//		for(int i=0; i<1; i++){
+//			int[] sig = randomSignal(500);
+//			int hit = det.detect(sig, sig, sig);		
+//			System.out.printf("Player %d has been hit!\n", hit);
+//		}
+//		return;		
+		int nPlayers = 2;
+		IDetector det = DetectorFactory.getDetector(nPlayers);		
+		int[] sig = randomSignal(500);		
+		int whoWasHit = det.detect(sig, sig, sig);
+		
 	}
 	
 	public static int[] randomSignal(int wh){

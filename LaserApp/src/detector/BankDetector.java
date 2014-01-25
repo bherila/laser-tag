@@ -23,21 +23,10 @@ public class BankDetector implements IDetector {
 //		double[] dgreen = Util.normalizePixelArray(green);
 //		double[] dblue = Util.normalizePixelArray(blue);
 		
-		// use a different filter bank for each player
-		
-		// leave the signal as it is and make a filter bank
-		FilterBank bank1 = new FilterBank();
 		double[][] redSignal = Util.array2square(dred);	
-		
-		
-		ResponsePyramid resp1 = bank1.match(redSignal);
-		
-		
-		// find global max
-		
-		
 		// use a different template for each
 		double[] maxima = new double[_nPlayers];
+		// use a different filter bank for each player
 		for(int i=0; i<_nPlayers; i++){		
 			ResponsePyramid resp = _filterBanks.get(i).match(redSignal);
 			maxima[i] = resp.getGlobalMax();
@@ -45,16 +34,8 @@ public class BankDetector implements IDetector {
 		
 		// find which player is hit
 		int whoWasHit = Util.indexOfMax(maxima);
-		
 		System.out.printf("Player %d has been hit\n", whoWasHit);
-		
-		return whoWasHit;
-		
-	
-		
-		
-		
-		
+		return whoWasHit;	
 	}
 
 }
