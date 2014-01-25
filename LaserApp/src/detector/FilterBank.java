@@ -20,13 +20,14 @@ public class FilterBank {
 		_filters.add(FILTER3);		
 	}
 	
-	public List<double[][]> match(double[][] signal){
+	public ResponsePyramid match(double[][] signal){
 		// perform match with each level
 		List<double[][]> responses = new ArrayList<double[][]>();
 		for(double[] kernel : _filters){
 			responses.add(conv(signal,kernel));		
 		}
-		return responses;
+		ResponsePyramid pyr = new ResponsePyramid(responses);
+		return pyr;
 	}
 	
 	private double[][] conv(double[][] signal, double[] kernel){
