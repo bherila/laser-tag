@@ -29,6 +29,7 @@ public class GameLogic {
 	
     private int kills;
     private int deaths;
+    private int HP;
     
 	private int myId;
 	private int gunId;
@@ -52,6 +53,13 @@ public class GameLogic {
         };
         
         new Timer(true).scheduleAtFixedRate(tt, 0, 500);
+	}
+	
+	public void restart() {
+		kills = 0;
+		deaths = 0;
+		HP = 100;
+		gunId = 0;
 	}
 
 	
