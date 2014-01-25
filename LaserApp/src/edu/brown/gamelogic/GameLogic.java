@@ -1,61 +1,72 @@
 package edu.brown.gamelogic;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.util.Log;
-
-import detector.DefaultDetector;
-
-import edu.brown.laserapp.FullscreenActivity;
+import edu.brown.laserapp.MainActivity;
 
 public class GameLogic {
+	private final static String URL_BASE = "192.168.1.1:3000";
+	
 	/* Different guns!
 	 */
-	String[] gun_names = new String[] {"Desert Eagle", "M4A1", "AK41", "AWP"};
-	Integer[] gun_damages = new Integer[] {20, 40, 45, 90}; 
-	// Different guns!
+	private final static String[]  GUN_NAMES   = new String[] {"Desert Eagle", "M4A1", "AK41", "AWP"};
+	private final static Integer[] GUN_DAMAGES = new Integer[] {20, 40, 45, 90}; 
 	
-	// Player class
-	public class Players{
-		private class Player{
-			public int id;
-			public int gun_id;
-			public Integer HP;
-			public Player(int id) {
-				this.id = id;
-				gun_id = 0;
-				HP = 100;
-			}
-		}
-		
-		private Player[] players = new Player[4];
-		
-		public Players() {
-			for (int i = 0 ; i < 4 ; i++) {
-				players[i] = new Player(i);
-			}
-		}
-		
-		
-	}
-	// Player class
+    private int kills;
+    private int deaths;
+    
+	private int myId;
+	private int gunId;
 	
-	public class RGBImage{
-		public int[] red;
-		public int[] green;
-		public int[] blue;
-		public RGBImage(int[] red, int[] green, int[] blue) {
-			this.red = red;
-			this.green = green;
-			this.blue = blue;
-		}
+	private DeathChecker deathChecker;
+	private KillReporter killReporter;
+	private MainActivity ma;
+	private String lastDeathString;
+
+	public GameLogic(MainActivity ma){
+		kills = 0;
+		deaths = 0;
+		myId = 0;
+		gunId = 0;
+        deathChecker = new DeathChecker();
+        killReporter = new KillReporter();
+        this.ma = ma;
+        lastDeathString = null;
+        
+        TimerTask tt = new TimerTask(){
+        	@Override
+        	public void run() {
+        		deathChecker.execute("http://" + URL_BASE + "/check/" + myId);
+        	}
+        };
+        
+        new Timer(true).scheduleAtFixedRate(tt, 0, 500);
 	}
 	
-	public void convert(byte[] data, FullscreenActivity act) {
+	public void incrementKills(){
+		ma.vibrate(250);
+		ma.setKillsText("" + (++kills) + " kills");
+	}
+	public void incrementDeaths(){
+		ma.vibrate(5000);
+		ma.setDeathsText("" + (++deaths) + " deaths");
+	}
+	
+	public void convert(byte[] data, MainActivity act) {
 		int result = -1;
 		
 		try {
@@ -92,10 +103,62 @@ public class GameLogic {
 
 		if (result > 0) {
 			Log.d("ELI", "Got a hit!");
-			act.incrementKills();
 			
-			if (act.getMyId() == 0)
-				act.setMyId(result);
+			if (myId == 0)
+				myId = result;
+			else
+				reportKill(result);
+		}
+	}
+	
+	private void reportKill(int id){
+		incrementKills();
+		killReporter.execute("http://" + URL_BASE + "/hit/" + id);
+	}
+	
+	private class DeathChecker extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+	            DefaultHttpClient httpClient = new DefaultHttpClient();
+	            HttpGet httpGet = new HttpGet(urls[0]);
+	
+	            HttpResponse httpResponse = httpClient.execute(httpGet);
+	            HttpEntity httpEntity = httpResponse.getEntity();
+	            return EntityUtils.toString(httpEntity);
+            } catch (IOException e) {
+                return "Unable to retrieve web page. URL may be invalid.";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+        	if (result != null && !result.equals(lastDeathString)) {
+    			incrementDeaths();
+    			lastDeathString = result;
+    		}
+       }
+    }
+	
+	private class KillReporter extends AsyncTask<String, Void, Void> {
+		@Override
+		protected Void doInBackground(String... urls) {
+			try {
+	            new DefaultHttpClient().execute(new HttpGet(urls[0]));
+            } catch (IOException e) { }
+			return null;
+		}
+	}
+	
+	public class RGBImage{
+		public int[] red;
+		public int[] green;
+		public int[] blue;
+		
+		public RGBImage(int[] red, int[] green, int[] blue) {
+			this.red = red;
+			this.green = green;
+			this.blue = blue;
 		}
 	}
 }

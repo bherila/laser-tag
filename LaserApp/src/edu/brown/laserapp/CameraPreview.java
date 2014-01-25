@@ -2,29 +2,26 @@ package edu.brown.laserapp;
 
 import java.io.IOException;
 
+import android.annotation.SuppressLint;
 import android.hardware.Camera;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+@SuppressLint("ViewConstructor")
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
     private Camera mCamera;
-    private FullscreenActivity fa;
+    private MainActivity ma;
 
-    @SuppressWarnings("deprecation")
-	public CameraPreview(FullscreenActivity context, Camera camera) {
+	public CameraPreview(MainActivity context, Camera camera) {
         super(context);
         mCamera = camera;
-        fa = context;
+        ma = context;
 
-        // Install a SurfaceHolder.Callback so we get notified when the
-        // underlying surface is created and destroyed.
         mHolder = getHolder();
         mHolder.addCallback(this);
-        // deprecated setting, but required on Android versions prior to 3.0
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
@@ -72,7 +69,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     
     @Override
     public boolean onTouchEvent(MotionEvent me) {
-    	fa.fire();
+    	ma.takePicture();
     	return true;
     }
 }
