@@ -36,6 +36,17 @@ public class FilterBank {
 			_filters.add(scale);		
 		}
 		
+//		// print filters for debugging
+//		System.out.println("FilterBank: Overview of filters: ");
+//		for(int i=0; i<N_SCALES; i++){
+//			System.out.println("Scale " + i + ": ");
+//			double[] filt = _filters.get(i);
+//			int len = filt.length;
+//			for(int j=0; j<len; j++){
+//				System.out.printf("%1.0f", filt[j]);
+//			}
+//			System.out.println();	
+//		}
 
 	}
 	
