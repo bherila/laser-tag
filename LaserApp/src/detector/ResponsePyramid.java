@@ -32,12 +32,14 @@ public class ResponsePyramid {
 	
 	// Find coordinates of global max
 	// {scale, row, colum}
-	double locateGlobalMax(){
+	int[] locateGlobalMax(){
 		double max = Double.NEGATIVE_INFINITY;
 		
 		int whichScale = 0;
 		int whichRow = 0;
 		int whichColumn = 0;
+		int nRows = 0;
+		int nColumns = 0;
 		
 		double[][] scale;		
 		int nScales = _resp.size();
@@ -53,11 +55,13 @@ public class ResponsePyramid {
 						whichScale = s;
 						whichRow = r;
 						whichColumn = c;	
+						nRows = height;
+						nColumns = width;
 					}
 				}
 			}	
 		}	
-		double[] resp = {whichScale, whichRow, whichColumn};
+		int[] resp = {whichScale, whichRow, whichColumn, nRows, nColumns};
 		return resp;
 	}
 	
