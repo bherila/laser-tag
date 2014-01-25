@@ -41,26 +41,14 @@ public class FullscreenActivity extends Activity {
 	}
 	
 	@Override
-	protected void onPause(){
-		if (mCamera != null){
-            mCamera.release();
-            mCamera = null;
-        }
-	}
+	protected void onDestroy(){ if (mCamera != null) mCamera.release(); }
 	
 	
-	private static Camera getCameraInstance(){
-	    try { 
-	        return Camera.open();
-	    }
-	    catch (Exception e){
-	    	return null;
-	    }
-	}
+	private static Camera getCameraInstance(){ try { return Camera.open(); } catch (Exception e){ return null; } }
+	
 	private void vibrate(long millis) {
 		Vibrator vibe = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-		if (vibe != null)
-			vibe.vibrate(millis);
+		if (vibe != null) vibe.vibrate(millis);
 	}
 	
 
@@ -74,21 +62,18 @@ public class FullscreenActivity extends Activity {
 		    	engine.convert(data, this);
 		    }
 		});
-	}	
+	}
+
 	public void incrementKills(){
 		vibrate(250);
-		
-		kills++;
-		TextView tv = (TextView) findViewById(R.id.kills);
-		tv.setText("" + kills + " kills");
+		getTextView(R.id.kills).setText("" + (++kills) + " kills");
 	}
 	public void incrementDeaths(){
 		vibrate(5000);
-		
-		deaths++;
-		TextView tv = (TextView) findViewById(R.id.deaths);
-		tv.setText("" + deaths + " deaths");
+		getTextView(R.id.deaths).setText("" + (++deaths) + " deaths");
 	}
+	
+	private TextView getTextView(int id) { return (TextView) findViewById(id); }
 		
 
 }
