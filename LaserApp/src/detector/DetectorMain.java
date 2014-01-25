@@ -23,7 +23,7 @@ public class DetectorMain {
 //			System.out.printf("Player %d has been hit!\n", hit);
 //		}
 //		return;		
-		int nPlayers = 1;
+		int nPlayers = 4;
 		IDetector det = DetectorFactory.getDetector(nPlayers);		
 		int[] sig = randomSignal(500);		
 		int whoWasHit = det.detect(sig, sig, sig);
